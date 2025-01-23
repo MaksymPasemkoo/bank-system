@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 
 @Entity
 @Data
@@ -16,9 +18,11 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
     private AccountType accountType;
+    private BigDecimal balance;
 
-    public Account(final User user, final AccountType accountType) {
+    public Account(final User user, final AccountType accountType, final BigDecimal balance) {
         this.user = user;
         this.accountType = accountType;
+        this.balance = balance;
     }
 }
