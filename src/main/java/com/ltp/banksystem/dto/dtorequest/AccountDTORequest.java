@@ -1,6 +1,6 @@
 package com.ltp.banksystem.dto.dtorequest;
 
-import com.ltp.banksystem.utils.AccountType;
+import com.ltp.banksystem.model.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,4 +12,7 @@ public class AccountDTORequest {
     private final Long userId;
     private final AccountType accountType;
     private final BigDecimal balance;
+
+
+
 }

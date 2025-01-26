@@ -1,6 +1,6 @@
 package com.ltp.banksystem.dto.dtoresponce;
 
-import com.ltp.banksystem.utils.AccountType;
+import com.ltp.banksystem.model.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

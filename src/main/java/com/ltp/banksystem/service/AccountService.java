@@ -5,11 +5,12 @@ import com.ltp.banksystem.model.Account;
 import com.ltp.banksystem.model.User;
 import com.ltp.banksystem.repository.AccountRepository;
 import com.ltp.banksystem.repository.UserRepository;
-import com.ltp.banksystem.utils.AccountType;
+import com.ltp.banksystem.model.enums.AccountType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,7 +35,7 @@ public class AccountService {
 
     public Account findAccountById(final Long id) {
         return accountRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Resource not found."));
+                .orElseThrow(() -> new NoSuchElementException("Account is not found."));
     }
 
     public List<Account> findAllAccounts() {
@@ -42,8 +43,8 @@ public class AccountService {
     }
 
     public void deleteAccountById(final Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Resource not found."));
+        final Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Account is not found."));
         accountRepository.delete(account);
     }
 

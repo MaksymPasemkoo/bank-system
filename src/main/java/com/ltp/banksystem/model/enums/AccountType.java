@@ -1,8 +1,10 @@
-package com.ltp.banksystem.utils;
+package com.ltp.banksystem.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum AccountType {
     CHECKING("Checking account"),
     SAVING("Saving account"),
@@ -11,8 +13,5 @@ public enum AccountType {
 
     private final String description;
 
-    AccountType(String description) {
-        this.description = description;
-    }
 
 }

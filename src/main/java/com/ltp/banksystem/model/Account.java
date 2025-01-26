@@ -1,6 +1,6 @@
 package com.ltp.banksystem.model;
 
-import com.ltp.banksystem.utils.AccountType;
+import com.ltp.banksystem.model.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

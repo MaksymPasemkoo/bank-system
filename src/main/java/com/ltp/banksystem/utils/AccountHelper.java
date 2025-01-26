@@ -3,6 +3,7 @@ package com.ltp.banksystem.utils;
 import com.ltp.banksystem.dto.dtorequest.AccountDTORequest;
 import com.ltp.banksystem.dto.dtoresponce.AccountDTOResponse;
 import com.ltp.banksystem.model.Account;
+import com.ltp.banksystem.model.enums.AccountType;
 
 import java.math.BigDecimal;
 
