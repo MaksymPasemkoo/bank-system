@@ -25,4 +25,8 @@ public class GlobalHandlerException {
     public ResponseEntity<String> handleUsernameNotfoundException(final UsernameNotFoundException exception){
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(TimeException.class)
+    public ResponseEntity<String> handleTimeException(final TimeException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    }
 }

@@ -6,6 +6,7 @@ import com.ltp.banksystem.dto.dtoresponce.UserDTOResponse;
 import com.ltp.banksystem.model.User;
 import com.ltp.banksystem.service.UserService;
 import com.ltp.banksystem.utils.UserHelper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<UserDTOResponse> createUser(@RequestBody final UserDTORequest userDTORequest){
@@ -64,10 +65,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteUser(@RequestBody UserCredentials userCredentials){
-        String username = userCredentials.getUsername();
-        String password = userCredentials.getPassword();
-
-        userService.deleteUser(username,password);
+        userService.deleteUser(userCredentials);
         return new ResponseEntity<>("Deleted",HttpStatus.OK);
     }
 

@@ -11,8 +11,9 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @NoArgsConstructor
-public class Account {
+public class Account  {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
     @ManyToOne
     @JoinColumn(name = "user_id")
