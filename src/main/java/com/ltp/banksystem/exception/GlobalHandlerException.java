@@ -29,4 +29,9 @@ public class GlobalHandlerException {
     public ResponseEntity<String> handleTimeException(final TimeException exception){
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<String> handleTransactionException(final TransactionException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

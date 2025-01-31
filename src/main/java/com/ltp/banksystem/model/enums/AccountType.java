@@ -2,7 +2,7 @@ package com.ltp.banksystem.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 
 @Getter
 @AllArgsConstructor
