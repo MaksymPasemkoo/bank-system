@@ -20,7 +20,7 @@ import java.util.List;
 public class AccountController {
     private final AccountService accountService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping
     public ResponseEntity<AccountDTOResponse> createAccount(@RequestBody final AccountDTORequest accountDTORequest) {
         final Account account = accountService.createOrUpdateAccount(accountDTORequest);
@@ -47,7 +47,7 @@ public class AccountController {
         return new ResponseEntity<>(accountDTOResponses, HttpStatus.FOUND);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PutMapping
     public ResponseEntity<AccountDTOResponse> updateAccount(@RequestBody final AccountDTORequest accountDTORequest) {
         final Account account = accountService.createOrUpdateAccount(accountDTORequest);
@@ -62,7 +62,7 @@ public class AccountController {
         return new ResponseEntity<>("Deleted",HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteAccount(@RequestBody final AccountCredentials accountCredentials){
         accountService.deleteAccount(accountCredentials);

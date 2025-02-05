@@ -32,6 +32,6 @@ public class GlobalHandlerException {
 
     @ExceptionHandler(TransactionException.class)
     public ResponseEntity<String> handleTransactionException(final TransactionException exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
 }
