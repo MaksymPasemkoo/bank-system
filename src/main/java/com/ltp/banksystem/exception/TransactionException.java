@@ -1,7 +1,7 @@
 package com.ltp.banksystem.exception;
 
-public class TransactionException extends RuntimeException{
-    public TransactionException(String message){
+public class TransactionException extends RuntimeException {
+    public TransactionException(String message) {
         super(message);
     }
 }

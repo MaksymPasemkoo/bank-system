@@ -1,10 +1,11 @@
 package com.ltp.banksystem;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-//@SpringBootTest
+@SpringBootTest
 class BankSystemApplicationTests {
     final Calculator calculator = new Calculator();
 
@@ -14,7 +15,7 @@ class BankSystemApplicationTests {
         final int numberTwo = 5;
 
         final int expected = 8;
-        final int actual = calculator.add(numberOne,numberTwo);
+        final int actual = calculator.add(numberOne, numberTwo);
 
         assertThat(actual).isEqualTo(expected);
     }

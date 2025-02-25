@@ -10,14 +10,14 @@ import java.time.LocalDate;
 
 public class TransactionHelper {
 
-    public static TransactionDTOResponse convertToTransactionDTOResponse(final Transaction transaction){
+    public static TransactionDTOResponse convertToTransactionDTOResponse(final Transaction transaction) {
         final Long transactionId = transaction.getTransactionId();
         final TransactionType transactionType = transaction.getTransactionType();
         final BigDecimal amount = transaction.getAmount();
         final LocalDate timestamp = transaction.getTimestamp();
         final Account accountFrom = transaction.getAccountFrom();
         final Account accountTo = transaction.getAccountTo();
-        return new TransactionDTOResponse(transactionId,transactionType,amount,timestamp,accountFrom,accountTo);
+        return new TransactionDTOResponse(transactionId, transactionType, amount, timestamp, accountFrom, accountTo);
     }
 
 

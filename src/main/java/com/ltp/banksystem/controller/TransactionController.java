@@ -25,52 +25,42 @@ public class TransactionController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/deposit")
     public ResponseEntity<TransactionDTOResponse> deposit(@RequestBody final DepositRequest request) {
-        final Transaction transaction = transactionService.deposit(request);
-        final TransactionDTOResponse transactionDTOResponse = TransactionHelper.convertToTransactionDTOResponse(transaction);
+        final TransactionDTOResponse transactionDTOResponse = transactionService.deposit(request);
         return new ResponseEntity<>(transactionDTOResponse, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/withdraw-from-deposit")
-    public ResponseEntity<TransactionDTOResponse> withdrawFromDeposit(@RequestBody final WithdrawFromDepositRequest
-                                                                              request) {
-        final Transaction transaction = transactionService.withdrawFromDeposit(request);
-        final TransactionDTOResponse transactionDTOResponse = TransactionHelper.convertToTransactionDTOResponse(transaction);
+    public ResponseEntity<TransactionDTOResponse> withdrawFromDeposit(@RequestBody final WithdrawFromDepositRequest request) {
+        final TransactionDTOResponse transactionDTOResponse = transactionService.withdrawFromDeposit(request);
         return new ResponseEntity<>(transactionDTOResponse, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/transfer")
     public ResponseEntity<TransactionDTOResponse> transferMoney(@RequestBody final TransferRequest request) {
-        final Transaction transaction = transactionService.transfer(request);
-        final TransactionDTOResponse transactionDTOResponse = TransactionHelper.convertToTransactionDTOResponse(transaction);
+        final TransactionDTOResponse transactionDTOResponse = transactionService.transfer(request);
         return new ResponseEntity<>(transactionDTOResponse, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/withdraw")
     public ResponseEntity<TransactionDTOResponse> withdraw(@RequestBody final WithdrawRequest request) {
-        final Transaction transaction = transactionService.withdraw(request);
-        final TransactionDTOResponse transactionDTOResponse = TransactionHelper.convertToTransactionDTOResponse(transaction);
+        final TransactionDTOResponse transactionDTOResponse = transactionService.withdraw(request);
         return new ResponseEntity<>(transactionDTOResponse, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<TransactionDTOResponse>> findAllTransactions() {
-        final List<Transaction> transactions = transactionService.findAllTransactions();
-        final List<TransactionDTOResponse> transactionDTOResponses = transactions.stream()
-                .map(TransactionHelper::convertToTransactionDTOResponse)
-                .toList();
+        final List<TransactionDTOResponse> transactionDTOResponses = transactionService.findAllTransactions();
         return new ResponseEntity<>(transactionDTOResponses, HttpStatus.FOUND);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDTOResponse> findTransactionById(@PathVariable final Long id) {
-        final Transaction transaction = transactionService.findTransactionById(id);
-        final TransactionDTOResponse transactionDTOResponse = TransactionHelper
-                .convertToTransactionDTOResponse(transaction);
+        final TransactionDTOResponse transactionDTOResponse = transactionService.findTransactionById(id);
         return new ResponseEntity<>(transactionDTOResponse, HttpStatus.FOUND);
     }
 

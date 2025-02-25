@@ -2,6 +2,7 @@ package com.ltp.banksystem.model;
 
 import com.ltp.banksystem.model.enums.AccountType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,8 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @NoArgsConstructor
-public class Account  {
+@AllArgsConstructor
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long accountId;

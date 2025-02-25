@@ -23,12 +23,14 @@ class AccountRepositoryTest {
     private UserRepository userRepository;
 
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         accountRepository.deleteAll();
         userRepository.deleteAll();
     }
+
     @Test
     void shouldReturnAccountsWhenAccountTypeIsBusiness() {
+        //given
         final User user1 = new User(Role.ADMIN, "admin", "admin");
         final User user2 = new User(Role.ADMIN, "fja", "fjadjfa");
         final User user3 = new User(Role.USER, "jrijqo", "vvo");
@@ -42,26 +44,31 @@ class AccountRepositoryTest {
         final Account account3 = new Account(user3, AccountType.CHECKING, BigDecimal.valueOf(1000));
         final Account account4 = new Account(user4, AccountType.SAVING, BigDecimal.valueOf(1000));
 
-        final List<Account> accounts = List.of(account1,account2,account3,account4);
+        final List<Account> accounts = List.of(account1, account2, account3, account4);
         accountRepository.saveAll(accounts);
 
-        final List<Account> expectedAccount = List.of(account1,account2);
+        final List<Account> expectedAccount = List.of(account1, account2);
+
+        //when
         final List<Account> actualAccounts = accountRepository.findAccountsByAccountType(AccountType.BUSINESS);
 
+        //then
         assertThat(actualAccounts).isEqualTo(expectedAccount);
-
     }
 
     @Test
-    void findAccountByUser(){
+    void findAccountByUser() {
+        //given
         final User user = new User(Role.ADMIN, "admin", "admin");
         userRepository.save(user);
 
         final Account expectedAccount = new Account(user, AccountType.BUSINESS, BigDecimal.valueOf(1000));
         accountRepository.save(expectedAccount);
 
+        //when
         final Account actualAccount = accountRepository.findByUser(user);
 
+        //then
         assertThat(actualAccount).isEqualTo(expectedAccount);
     }
 }

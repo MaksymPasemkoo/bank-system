@@ -1,6 +1,7 @@
 package com.ltp.banksystem.service;
 
 import com.ltp.banksystem.dto.dtorequest.*;
+import com.ltp.banksystem.dto.dtoresponce.TransactionDTOResponse;
 import com.ltp.banksystem.exception.PermissionException;
 import com.ltp.banksystem.exception.TransactionException;
 import com.ltp.banksystem.model.Account;
@@ -9,6 +10,7 @@ import com.ltp.banksystem.model.User;
 import com.ltp.banksystem.repository.AccountRepository;
 import com.ltp.banksystem.repository.TransactionRepository;
 import com.ltp.banksystem.repository.UserRepository;
+import com.ltp.banksystem.utils.TransactionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class TransactionService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public Transaction deposit(final DepositRequest request) {
+    public TransactionDTOResponse deposit(final DepositRequest request) {
         final Account account = getAccount(request.getAccountId(), request.getPassword());
         final Account bankAccount = getBankAccount();
 
@@ -42,10 +44,12 @@ public class TransactionService {
 
         final Transaction transaction = new Transaction(DEPOSIT, request.getAmount(),
                 LocalDate.now(), bankAccount, account);
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
+
+        return TransactionHelper.convertToTransactionDTOResponse(transaction);
     }
 
-    public Transaction withdrawFromDeposit(final WithdrawFromDepositRequest request) {
+    public TransactionDTOResponse withdrawFromDeposit(final WithdrawFromDepositRequest request) {
         final Account account = getAccount(request.getAccountId(), request.getPassword());
         final Account bankAccount = getBankAccount();
         final Long transactionId = request.getTransactionId();
@@ -53,7 +57,7 @@ public class TransactionService {
         final Transaction existingTransaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new NoSuchElementException("There is no transaction with this id."));
 
-        if(existingTransaction.getTransactionType() != DEPOSIT){
+        if (existingTransaction.getTransactionType() != DEPOSIT) {
             throw new TransactionException("This transaction is not deposit. ");
         }
 
@@ -72,11 +76,13 @@ public class TransactionService {
 
         final Transaction transaction = new Transaction(WITHDRAW_FROM_DEPOSIT, transferAmount, LocalDate.now()
                 , bankAccount, account);
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
+
+        return TransactionHelper.convertToTransactionDTOResponse(transaction);
     }
 
 
-    public Transaction transfer(final TransferRequest request) {
+    public TransactionDTOResponse transfer(final TransferRequest request) {
         final Account fromAccount = getAccount(request.getAccountId(), request.getPassword());
         final Account toAccount = accountRepository.findById(request.getToAccountId())
                 .orElseThrow(() -> new NoSuchElementException("There is no account with this id."));
@@ -90,10 +96,12 @@ public class TransactionService {
         toAccount.setBalance(toAccount.getBalance().add(amount));
 
         final Transaction transaction = new Transaction(TRANSFER, amount, LocalDate.now(), fromAccount, toAccount);
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
+
+        return TransactionHelper.convertToTransactionDTOResponse(transaction);
     }
 
-    public Transaction withdraw(final WithdrawRequest request) {
+    public TransactionDTOResponse withdraw(final WithdrawRequest request) {
         final Account account = getAccount(request.getAccountId(), request.getPassword());
         final BigDecimal amount = request.getAmount();
 
@@ -104,16 +112,22 @@ public class TransactionService {
         account.setBalance(account.getBalance().subtract(amount));
 
         final Transaction transaction = new Transaction(WITHDRAW, amount, LocalDate.now(), account, null);
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
+
+        return TransactionHelper.convertToTransactionDTOResponse(transaction);
     }
 
-    public List<Transaction> findAllTransactions() {
-        return transactionRepository.findAll();
+    public List<TransactionDTOResponse> findAllTransactions() {
+        final List<Transaction> transactions = transactionRepository.findAll();
+        return transactions.stream()
+                .map(TransactionHelper::convertToTransactionDTOResponse)
+                .toList();
     }
 
-    public Transaction findTransactionById(final Long id) {
-        return transactionRepository.findById(id)
+    public TransactionDTOResponse findTransactionById(final Long id) {
+        final Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Transaction not found."));
+        return TransactionHelper.convertToTransactionDTOResponse(transaction);
     }
 
 

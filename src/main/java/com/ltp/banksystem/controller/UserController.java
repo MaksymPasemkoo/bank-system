@@ -21,51 +21,44 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDTOResponse> createUser(@RequestBody final UserDTORequest userDTORequest){
-        final User user = userService.createOrUpdateUser(userDTORequest);
-        final UserDTOResponse userDTOResponse = UserHelper.convertToUserDTOResponse(user);
+    public ResponseEntity<UserDTOResponse> createUser(@RequestBody final UserDTORequest userDTORequest) {
+        final UserDTOResponse userDTOResponse = userService.createOrUpdateUser(userDTORequest);
         return new ResponseEntity<>(userDTOResponse, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTOResponse> findUserById(@PathVariable final Long id){
-        final User user = userService.findUserById(id);
-        final UserDTOResponse userDTOResponse = UserHelper.convertToUserDTOResponse(user);
-        return new ResponseEntity<>(userDTOResponse,HttpStatus.FOUND);
+    public ResponseEntity<UserDTOResponse> findUserById(@PathVariable final Long id) {
+        final UserDTOResponse userDTOResponse = userService.findUserById(id);
+        return new ResponseEntity<>(userDTOResponse, HttpStatus.FOUND);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UserDTOResponse>> findUsers(){
-        final List<User> users = userService.findUsers();
-        final List<UserDTOResponse> userDTOResponses = users.stream()
-                .map(UserHelper::convertToUserDTOResponse)
-                .toList();
-
-        return new ResponseEntity<>(userDTOResponses,HttpStatus.FOUND);
+    public ResponseEntity<List<UserDTOResponse>> findUsers() {
+        final List<UserDTOResponse> userDTOResponses = userService.findUsers();
+        return new ResponseEntity<>(userDTOResponses, HttpStatus.FOUND);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PutMapping
-    public ResponseEntity<UserDTOResponse> updateUser(@RequestBody final UserDTORequest userDTORequest){
-        final User user = userService.createOrUpdateUser(userDTORequest);
-        final UserDTOResponse userDTOResponse = UserHelper.convertToUserDTOResponse(user);
+    public ResponseEntity<UserDTOResponse> updateUser(@RequestBody final UserDTORequest userDTORequest) {
+        final UserDTOResponse userDTOResponse = userService.createOrUpdateUser(userDTORequest);
         return new ResponseEntity<>(userDTOResponse, HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable final Long id){
+    public ResponseEntity<String> deleteUserById(@PathVariable final Long id) {
         userService.deleteUserById(id);
-        return new ResponseEntity<>("Deleted",HttpStatus.OK);
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(@RequestBody UserCredentials userCredentials){
+    public ResponseEntity<String> deleteUser(@RequestBody UserCredentials userCredentials) {
         userService.deleteUser(userCredentials);
-        return new ResponseEntity<>("Deleted",HttpStatus.OK);
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 
 }

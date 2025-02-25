@@ -12,26 +12,27 @@ import java.util.NoSuchElementException;
 public class GlobalHandlerException {
 
     @ExceptionHandler(PermissionException.class)
-    public ResponseEntity<String> handlePermissionException(final PermissionException exception){
+    public ResponseEntity<String> handlePermissionException(final PermissionException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleResponseStatusException(final NoSuchElementException exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleResponseStatusException(final NoSuchElementException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<String> handleUsernameNotfoundException(final UsernameNotFoundException exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleUsernameNotfoundException(final UsernameNotFoundException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(TimeException.class)
-    public ResponseEntity<String> handleTimeException(final TimeException exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> handleTimeException(final TimeException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TransactionException.class)
-    public ResponseEntity<String> handleTransactionException(final TransactionException exception){
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> handleTransactionException(final TransactionException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
