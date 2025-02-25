@@ -49,16 +49,18 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable final Long id) {
-        userService.deleteUserById(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    public ResponseEntity<Void> deleteUserById(@PathVariable final Long id) {
+        final boolean isDeleted = userService.deleteUserById(id);
+        return isDeleted ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(@RequestBody UserCredentials userCredentials) {
-        userService.deleteUser(userCredentials);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    public ResponseEntity<Void> deleteUser(@RequestBody UserCredentials userCredentials) {
+        final boolean isDeleted = userService.deleteUser(userCredentials);
+        return isDeleted ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

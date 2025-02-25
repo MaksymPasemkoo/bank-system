@@ -1,13 +1,14 @@
 package com.ltp.banksystem.service;
 
 
+import com.ltp.banksystem.dto.dtorequest.UserCredentials;
 import com.ltp.banksystem.dto.dtorequest.UserDTORequest;
 import com.ltp.banksystem.dto.dtoresponce.UserDTOResponse;
+import com.ltp.banksystem.exception.PermissionException;
 import com.ltp.banksystem.model.User;
 import com.ltp.banksystem.model.enums.Role;
 import com.ltp.banksystem.repository.UserRepository;
 import com.ltp.banksystem.utils.UserHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -103,12 +104,103 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
-    void deleteUserById() {
+    void shouldDeleteUserById() {
+        //given
+        final Long userId = 1L;
+
+        //mock the calls
+        when(userRepository.existsById(userId)).thenReturn(true);
+
+        //when
+        final boolean isDeleted = userService.deleteUserById(userId);
+
+        //then
+        verify(userRepository,times(1)).existsById(userId);
+
+        assertTrue(isDeleted);
     }
 
     @Test
-    @Disabled
-    void deleteUser() {
+    void shouldNotDeleteUserById(){
+        //given
+        final Long userId = 2L;
+
+        //mock the calls
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        //when
+        final boolean isDeleted = userService.deleteUserById(userId);
+
+        verify(userRepository,times(1)).existsById(userId);
+
+        assertFalse(isDeleted);
+
+    }
+
+    @Test
+    void shouldDeleteUserByCredentials() {
+        //given
+        final String username = "someone";
+        final String password = "something";
+        final UserCredentials userCredentials = new UserCredentials(username,password);
+        final User user = new User(1L,Role.ADMIN,username,password);
+
+        //mock the calls
+        when(userRepository.findByUsername(username)).thenReturn(user);
+        when(userRepository.existsUsersByUsername(username)).thenReturn(true);
+        when(bCryptPasswordEncoder.matches(password,user.getPassword())).thenReturn(true);
+
+        //when
+        final boolean isDeleted = userService.deleteUser(userCredentials);
+
+        //then
+        verify(userRepository,times(1)).findByUsername(username);
+        verify(userRepository,times(1)).existsUsersByUsername(username);
+        verify(bCryptPasswordEncoder,times(1)).matches(password,user.getPassword());
+        assertTrue(isDeleted);
+    }
+
+    @Test
+    void shouldNotDeleteUserByCredentialsWhenUsernameDoesNotExist() {
+        //given
+        final String username = "someone";
+        final String password = "something";
+        final UserCredentials userCredentials = new UserCredentials(username,password);
+        final User user = new User(1L,Role.ADMIN,username,password);
+
+        //mock the calls
+        when(userRepository.findByUsername(username)).thenReturn(null);
+
+        //when
+        final boolean isDeleted = userService.deleteUser(userCredentials);
+
+        //then
+        verify(userRepository,times(1)).findByUsername(username);
+        verify(userRepository,times(1)).existsUsersByUsername(username);
+        verify(bCryptPasswordEncoder,times(0)).matches(password,user.getPassword());
+
+        assertFalse(isDeleted);
+    }
+
+    @Test
+    void shouldNotDeleteUserByCredentialsWhenPasswordIncorrect() {
+        //given
+        final String username = "someone";
+        final String password = "something";
+        final UserCredentials userCredentials = new UserCredentials(username,password);
+        final User user = new User(1L,Role.ADMIN,username,password);
+
+        //mock the calls
+        when(userRepository.findByUsername(username)).thenReturn(user);
+        when(userRepository.existsUsersByUsername(username)).thenReturn(true);
+        when(bCryptPasswordEncoder.matches(password,user.getPassword())).thenReturn(false);
+
+        //when + then
+        assertThrows(PermissionException.class,() -> userService.deleteUser(userCredentials));
+
+        verify(userRepository,times(1)).findByUsername(username);
+        verify(userRepository,times(1)).existsUsersByUsername(username);
+        verify(bCryptPasswordEncoder,times(1)).matches(password,user.getPassword());
+
     }
 }

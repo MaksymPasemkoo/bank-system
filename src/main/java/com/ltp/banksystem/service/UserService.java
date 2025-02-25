@@ -49,25 +49,31 @@ public class UserService {
                 .toList();
     }
 
-    public void deleteUserById(final Long id) {
-        final User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found."));
-        userRepository.delete(user);
+    public boolean deleteUserById(final Long id) {
+        if(userRepository.existsById(id)){
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
 
-    public void deleteUser(final UserCredentials userCredentials) {
+    public boolean deleteUser(final UserCredentials userCredentials) {
         final String username = userCredentials.getUsername();
         final String checkPassword = userCredentials.getPassword();
 
         final User user = userRepository.findByUsername(username);
-        if (user == null) throw new UsernameNotFoundException("User not found.");
 
+        if(!userRepository.existsUsersByUsername(username)){
+            return false;
+        }
         final String password = user.getPassword();
 
         if (!bCryptPasswordEncoder.matches(checkPassword, password)) {
             throw new PermissionException("Password not correct.");
         }
+
         userRepository.delete(user);
+        return true;
     }
 }
