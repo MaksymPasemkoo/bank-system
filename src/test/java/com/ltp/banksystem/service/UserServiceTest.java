@@ -9,6 +9,7 @@ import com.ltp.banksystem.model.User;
 import com.ltp.banksystem.model.enums.Role;
 import com.ltp.banksystem.repository.UserRepository;
 import com.ltp.banksystem.utils.UserHelper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,11 @@ class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @AfterEach
+    void tearDown(){
+        userRepository.deleteAll();
+    }
 
     @Test
     void shouldCreateOrUpdateStudent() {
@@ -72,10 +78,9 @@ class UserServiceTest {
 
         //then
         assertThat(actualUserDTOResponse).isEqualTo(expectedUserDtoResponse);
-        verify(userRepository,times(1)).findById(userId);
-
         assertThrows(NoSuchElementException.class, () -> userService.findUserById(null));
 
+        verify(userRepository,times(1)).findById(userId);
     }
 
     @Test
@@ -115,9 +120,9 @@ class UserServiceTest {
         final boolean isDeleted = userService.deleteUserById(userId);
 
         //then
-        verify(userRepository,times(1)).existsById(userId);
-
         assertTrue(isDeleted);
+
+        verify(userRepository,times(1)).existsById(userId);
     }
 
     @Test
@@ -131,10 +136,9 @@ class UserServiceTest {
         //when
         final boolean isDeleted = userService.deleteUserById(userId);
 
-        verify(userRepository,times(1)).existsById(userId);
-
         assertFalse(isDeleted);
 
+        verify(userRepository,times(1)).existsById(userId);
     }
 
     @Test
@@ -154,10 +158,12 @@ class UserServiceTest {
         final boolean isDeleted = userService.deleteUser(userCredentials);
 
         //then
-        verify(userRepository,times(1)).findByUsername(username);
-        verify(userRepository,times(1)).existsUsersByUsername(username);
-        verify(bCryptPasswordEncoder,times(1)).matches(password,user.getPassword());
         assertTrue(isDeleted);
+
+        verify(userRepository,times(1)).findByUsername(username);
+        verify(bCryptPasswordEncoder,times(1)).matches(password,user.getPassword());
+        verify(userRepository,times(1)).existsUsersByUsername(username);
+
     }
 
     @Test
@@ -175,11 +181,11 @@ class UserServiceTest {
         final boolean isDeleted = userService.deleteUser(userCredentials);
 
         //then
+        assertFalse(isDeleted);
+
         verify(userRepository,times(1)).findByUsername(username);
         verify(userRepository,times(1)).existsUsersByUsername(username);
         verify(bCryptPasswordEncoder,times(0)).matches(password,user.getPassword());
-
-        assertFalse(isDeleted);
     }
 
     @Test
@@ -201,6 +207,7 @@ class UserServiceTest {
         verify(userRepository,times(1)).findByUsername(username);
         verify(userRepository,times(1)).existsUsersByUsername(username);
         verify(bCryptPasswordEncoder,times(1)).matches(password,user.getPassword());
-
     }
+
+
 }

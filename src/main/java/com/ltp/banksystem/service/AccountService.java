@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.ltp.banksystem.model.enums.Role.ADMIN;
 
@@ -59,25 +60,30 @@ public class AccountService {
                 .toList();
     }
 
-    public void deleteAccountById(final Long id) {
-        final Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Account  not found."));
-        accountRepository.delete(account);
+    public boolean deleteAccountById(final Long id) {
+        if (accountRepository.existsById(id)) {
+            accountRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    public void deleteAccount(final AccountCredentials accountCredentials) {
+    public boolean deleteAccount(final AccountCredentials accountCredentials) {
         final Long accountId = accountCredentials.getAccountId();
-        final Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new NoSuchElementException("Account not found."));
+        final Optional<Account> accountOptional = accountRepository.findById(accountId);
 
+        if (accountOptional.isEmpty()) {
+            return false;
+        }
+        final Account account = accountOptional.get();
         final String password = account.getUser().getPassword();
         final String checkPassword = accountCredentials.getPassword();
 
         if (!bCryptPasswordEncoder.matches(checkPassword, password)) {
             throw new PermissionException("Password not correct");
         }
+
         accountRepository.delete(account);
+        return true;
     }
-
-
 }

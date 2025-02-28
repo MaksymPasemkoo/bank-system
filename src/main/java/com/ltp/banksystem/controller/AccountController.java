@@ -48,15 +48,17 @@ public class AccountController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAccountById(@PathVariable final Long id) {
-        accountService.deleteAccountById(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    public ResponseEntity<Void> deleteAccountById(@PathVariable final Long id) {
+        final boolean isDeleted = accountService.deleteAccountById(id);
+        return isDeleted ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteAccount(@RequestBody final AccountCredentials accountCredentials) {
-        accountService.deleteAccount(accountCredentials);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        final boolean isDeleted = accountService.deleteAccount(accountCredentials);
+        return isDeleted ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

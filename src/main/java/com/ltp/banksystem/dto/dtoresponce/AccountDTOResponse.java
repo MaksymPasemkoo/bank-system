@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+
 public class AccountDTOResponse {
     private final Long id;
     private final Long userId;
