@@ -16,12 +16,12 @@ import java.math.BigDecimal;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long accountId;
+    private Long accountId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     protected User user;
-    protected AccountType accountType;
-    protected BigDecimal balance;
+    private AccountType accountType;
+    private BigDecimal balance;
 
     public Account(final User user, final AccountType accountType, final BigDecimal balance) {
         this.user = user;
