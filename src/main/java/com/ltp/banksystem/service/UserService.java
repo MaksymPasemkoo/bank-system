@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public boolean deleteUserById(final Long id) {
-        if(userRepository.existsById(id)){
+        if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             return true;
         }
@@ -64,7 +64,7 @@ public class UserService {
 
         final User user = userRepository.findByUsername(username);
 
-        if(!userRepository.existsUsersByUsername(username)){
+        if (!userRepository.existsUsersByUsername(username)) {
             return false;
         }
         final String password = user.getPassword();

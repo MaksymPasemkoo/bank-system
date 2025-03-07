@@ -21,11 +21,11 @@ public class UserHelper {
         return new UserDTORequest(role, userName, password);
     }
 
-    public static User convertToUser(final UserDTOResponse userDTOResponse){
+    public static User convertToUser(final UserDTOResponse userDTOResponse) {
         final Long id = userDTOResponse.getId();
         final Role role = userDTOResponse.getRole();
         final String userName = userDTOResponse.getUsername();
         final String password = userDTOResponse.getPassword();
-        return new User(id,role,userName,password);
+        return new User(id, role, userName, password);
     }
 }

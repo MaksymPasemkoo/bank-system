@@ -131,10 +131,12 @@ public class TransactionService {
     }
 
 
-    public void deleteTransactionById(final Long id) {
-        final Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Transaction not found."));
-        transactionRepository.delete(transaction);
+    public boolean deleteTransactionById(final Long id) {
+        if (transactionRepository.existsById(id)) {
+            transactionRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     private static BigDecimal transferCalculation(final BigDecimal dateDifference, final Transaction transaction) {

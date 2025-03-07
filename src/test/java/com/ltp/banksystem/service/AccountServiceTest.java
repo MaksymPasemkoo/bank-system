@@ -62,7 +62,7 @@ class AccountServiceTest {
                 .thenAnswer(
                         invocationOnMock -> {
                             final Account account = invocationOnMock.getArgument(0);
-                            ReflectionTestUtils.setField(account,"accountId",1L);
+                            ReflectionTestUtils.setField(account, "accountId", 1L);
                             return account;
                         }
                 );
@@ -83,7 +83,7 @@ class AccountServiceTest {
     void findAccountByIdShouldReturnAccountDTOResponseWhenAccountExists() {
         //given
         final Long accountId = 1L;
-        final Account expectedAccount = new Account(accountId,new User(1L, Role.ADMIN, "jdfal", "fjslfj"),
+        final Account expectedAccount = new Account(accountId, new User(1L, Role.ADMIN, "jdfal", "fjslfj"),
                 AccountType.BUSINESS,
                 BigDecimal.valueOf(13441));
 

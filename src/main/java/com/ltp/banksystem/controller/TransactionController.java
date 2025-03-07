@@ -26,14 +26,14 @@ public class TransactionController {
     @PostMapping("/deposit")
     public ResponseEntity<TransactionDTOResponse> deposit(@RequestBody final DepositRequest request) {
         final TransactionDTOResponse transactionDTOResponse = transactionService.deposit(request);
-        return new ResponseEntity<>(transactionDTOResponse, HttpStatus.ACCEPTED);
+        return ResponseEntity.accepted().body(transactionDTOResponse);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/withdraw-from-deposit")
     public ResponseEntity<TransactionDTOResponse> withdrawFromDeposit(@RequestBody final WithdrawFromDepositRequest request) {
         final TransactionDTOResponse transactionDTOResponse = transactionService.withdrawFromDeposit(request);
-        return new ResponseEntity<>(transactionDTOResponse, HttpStatus.ACCEPTED);
+        return ResponseEntity.accepted().body(transactionDTOResponse);
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -54,20 +54,21 @@ public class TransactionController {
     @GetMapping
     public ResponseEntity<List<TransactionDTOResponse>> findAllTransactions() {
         final List<TransactionDTOResponse> transactionDTOResponses = transactionService.findAllTransactions();
-        return new ResponseEntity<>(transactionDTOResponses, HttpStatus.FOUND);
+        return ResponseEntity.status(HttpStatus.FOUND).body(transactionDTOResponses);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDTOResponse> findTransactionById(@PathVariable final Long id) {
         final TransactionDTOResponse transactionDTOResponse = transactionService.findTransactionById(id);
-        return new ResponseEntity<>(transactionDTOResponse, HttpStatus.FOUND);
+        return ResponseEntity.status(HttpStatus.FOUND).body(transactionDTOResponse);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransactionById(@PathVariable final Long id) {
-        transactionService.deleteTransactionById(id);
-        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    public ResponseEntity<Void> deleteTransactionById(@PathVariable final Long id) {
+        final boolean isDeleted = transactionService.deleteTransactionById(id);
+        return isDeleted ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 }

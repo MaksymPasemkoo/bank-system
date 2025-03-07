@@ -22,43 +22,43 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<AccountDTOResponse> createAccount(@RequestBody final AccountDTORequest accountDTORequest) {
         final AccountDTOResponse accountDTOResponse = accountService.createOrUpdateAccount(accountDTORequest);
-        return new ResponseEntity<>(accountDTOResponse, HttpStatus.OK);
+        return ResponseEntity.ok(accountDTOResponse);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<AccountDTOResponse> findAccountById(@PathVariable final Long id) {
         final AccountDTOResponse accountDTOResponse = accountService.findAccountById(id);
-        return new ResponseEntity<>(accountDTOResponse, HttpStatus.FOUND);
+        return ResponseEntity.status(HttpStatus.FOUND).body(accountDTOResponse);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<AccountDTOResponse>> findAllAccounts() {
         final List<AccountDTOResponse> accountDTOResponses = accountService.findAllAccounts();
-        return new ResponseEntity<>(accountDTOResponses, HttpStatus.FOUND);
+        return ResponseEntity.status(HttpStatus.FOUND).body(accountDTOResponses);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PutMapping
     public ResponseEntity<AccountDTOResponse> updateAccount(@RequestBody final AccountDTORequest accountDTORequest) {
         final AccountDTOResponse accountDTOResponse = accountService.createOrUpdateAccount(accountDTORequest);
-        return new ResponseEntity<>(accountDTOResponse, HttpStatus.OK);
+        return ResponseEntity.ok(accountDTOResponse);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccountById(@PathVariable final Long id) {
         final boolean isDeleted = accountService.deleteAccountById(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return isDeleted ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteAccount(@RequestBody final AccountCredentials accountCredentials) {
         final boolean isDeleted = accountService.deleteAccount(accountCredentials);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return isDeleted ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 }

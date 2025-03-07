@@ -52,7 +52,7 @@ class TransactionServiceTest {
     @Test
     void depositShouldReturnTransactionDTOResponse() {
         //given
-        final DepositRequest depositRequest = new DepositRequest(2L,"rgiew",BigDecimal.valueOf(111));
+        final DepositRequest depositRequest = new DepositRequest(2L, "rgiew", BigDecimal.valueOf(111));
         final Account account = new Account(2L, new User(1L, Role.USER, "jjvo"
                 , "rgiew"),
                 AccountType.CHECKING,
@@ -65,14 +65,14 @@ class TransactionServiceTest {
 
         final Transaction expectedTransaction = new Transaction(DEPOSIT, depositRequest.getAmount(),
                 LocalDate.now(), bankAccount, account);
-        ReflectionTestUtils.setField(expectedTransaction,"transactionId",1L);
+        ReflectionTestUtils.setField(expectedTransaction, "transactionId", 1L);
 
         final TransactionDTOResponse expectedTransactionDTOResponse = TransactionHelper
                 .convertToTransactionDTOResponse(expectedTransaction);
 
         //mock the calls
         when(accountRepository.findById(eq(account.getAccountId()))).thenReturn(Optional.of(account));
-        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()),anyString()))
+        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()), anyString()))
                 .thenReturn(true);
         when(userRepository.findAllByRole(eq(Role.ADMIN))).thenReturn(List.of(bankAccount.getUser()));
         when(accountRepository.findByUser(eq(bankAccount.getUser()))).thenReturn(bankAccount);
@@ -80,7 +80,7 @@ class TransactionServiceTest {
                 .thenAnswer(
                         invocationOnMock -> {
                             final Transaction transaction = invocationOnMock.getArgument(0);
-                            ReflectionTestUtils.setField(transaction,"transactionId",1L);
+                            ReflectionTestUtils.setField(transaction, "transactionId", 1L);
                             return transaction;
                         }
                 );
@@ -93,34 +93,34 @@ class TransactionServiceTest {
                 .usingRecursiveComparison()
                 .isEqualTo(expectedTransactionDTOResponse);
 
-        verify(accountRepository,times(1)).findById(eq(account.getAccountId()));
-        verify(bCryptPasswordEncoder,times(1))
-                .matches(eq(depositRequest.getPassword()),anyString());
-        verify(userRepository,times(1)).findAllByRole(eq(Role.ADMIN));
-        verify(accountRepository,times(1)).findByUser(eq(bankAccount.getUser()));
-        verify(transactionRepository,times(1)).save(any(Transaction.class));
+        verify(accountRepository, times(1)).findById(eq(account.getAccountId()));
+        verify(bCryptPasswordEncoder, times(1))
+                .matches(eq(depositRequest.getPassword()), anyString());
+        verify(userRepository, times(1)).findAllByRole(eq(Role.ADMIN));
+        verify(accountRepository, times(1)).findByUser(eq(bankAccount.getUser()));
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 
     @Test
     void depositShouldThrowExceptionWhenAccountNotFoundById() {
         //given
-        final DepositRequest depositRequest = new DepositRequest(2L,"rgiew",BigDecimal.valueOf(111));
+        final DepositRequest depositRequest = new DepositRequest(2L, "rgiew", BigDecimal.valueOf(111));
 
         //mock the calls
         when(accountRepository.findById(eq(depositRequest.getAccountId()))).thenReturn(Optional.empty());
 
         //when + then
-        assertThrows(NoSuchElementException.class,() -> transactionService.deposit(depositRequest));
+        assertThrows(NoSuchElementException.class, () -> transactionService.deposit(depositRequest));
 
-        verify(accountRepository,times(1)).findById(eq(depositRequest.getAccountId()));
+        verify(accountRepository, times(1)).findById(eq(depositRequest.getAccountId()));
 
-        verifyNoInteractions(bCryptPasswordEncoder,userRepository,transactionRepository);
+        verifyNoInteractions(bCryptPasswordEncoder, userRepository, transactionRepository);
     }
 
     @Test
     void depositShouldThrowExceptionWhenAccountPasswordIsNotCorrect() {
         //given
-        final DepositRequest depositRequest = new DepositRequest(2L,"rgiew",BigDecimal.valueOf(111));
+        final DepositRequest depositRequest = new DepositRequest(2L, "rgiew", BigDecimal.valueOf(111));
         final Account account = new Account(2L, new User(1L, Role.USER, "jjvo"
                 , "rgiew"),
                 AccountType.CHECKING,
@@ -128,22 +128,22 @@ class TransactionServiceTest {
 
         //mock the calls
         when(accountRepository.findById(eq(depositRequest.getAccountId()))).thenReturn(Optional.of(account));
-        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()),eq(account.getUser().getPassword())))
+        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()), eq(account.getUser().getPassword())))
                 .thenReturn(false);
 
         //when + then
-        assertThrows(PermissionException.class,() -> transactionService.deposit(depositRequest));
+        assertThrows(PermissionException.class, () -> transactionService.deposit(depositRequest));
 
-        verify(accountRepository,times(1)).findById(eq(depositRequest.getAccountId()));
-        verify(bCryptPasswordEncoder,times(1))
-                .matches(eq(depositRequest.getPassword()),eq(account.getUser().getPassword()));
-        verifyNoInteractions(userRepository,transactionRepository);
+        verify(accountRepository, times(1)).findById(eq(depositRequest.getAccountId()));
+        verify(bCryptPasswordEncoder, times(1))
+                .matches(eq(depositRequest.getPassword()), eq(account.getUser().getPassword()));
+        verifyNoInteractions(userRepository, transactionRepository);
     }
 
     @Test
     void depositShouldThrowExceptionWhenAdminNotFound() {
         //given
-        final DepositRequest depositRequest = new DepositRequest(2L,"rgiew",BigDecimal.valueOf(111));
+        final DepositRequest depositRequest = new DepositRequest(2L, "rgiew", BigDecimal.valueOf(111));
 
         final Account account = new Account(2L, new User(1L, Role.USER, "jjvo"
                 , "rgiew"),
@@ -158,25 +158,25 @@ class TransactionServiceTest {
 
         //mock the calls
         when(accountRepository.findById(eq(depositRequest.getAccountId()))).thenReturn(Optional.of(account));
-        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()),eq(account.getUser().getPassword())))
+        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()), eq(account.getUser().getPassword())))
                 .thenReturn(true);
         when(userRepository.findAllByRole(eq(Role.ADMIN))).thenReturn(Collections.emptyList());
 
 
         //when + then
-        assertThrows(NoSuchElementException.class,() -> transactionService.deposit(depositRequest));
+        assertThrows(NoSuchElementException.class, () -> transactionService.deposit(depositRequest));
 
-        verify(accountRepository,times(1)).findById(eq(depositRequest.getAccountId()));
-        verify(bCryptPasswordEncoder,times(1))
-                .matches(eq(depositRequest.getPassword()),eq(account.getUser().getPassword()));
-        verify(userRepository,times(1)).findAllByRole(eq(Role.ADMIN));
+        verify(accountRepository, times(1)).findById(eq(depositRequest.getAccountId()));
+        verify(bCryptPasswordEncoder, times(1))
+                .matches(eq(depositRequest.getPassword()), eq(account.getUser().getPassword()));
+        verify(userRepository, times(1)).findAllByRole(eq(Role.ADMIN));
         verifyNoInteractions(transactionRepository);
     }
 
     @Test
     void depositShouldThrowExceptionWhenAccountDoNotHaveEnoughMoney() {
         //given
-        final DepositRequest depositRequest = new DepositRequest(2L,"rgiew",BigDecimal.valueOf(1111));
+        final DepositRequest depositRequest = new DepositRequest(2L, "rgiew", BigDecimal.valueOf(1111));
         final Account account = new Account(2L, new User(1L, Role.USER, "jjvo"
                 , "rgiew"),
                 AccountType.CHECKING,
@@ -190,27 +190,27 @@ class TransactionServiceTest {
 
         //mock the calls
         when(accountRepository.findById(eq(account.getAccountId()))).thenReturn(Optional.of(account));
-        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()),anyString()))
+        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()), anyString()))
                 .thenReturn(true);
         when(userRepository.findAllByRole(eq(Role.ADMIN))).thenReturn(List.of(bankAccount.getUser()));
         when(accountRepository.findByUser(eq(bankAccount.getUser()))).thenReturn(bankAccount);
 
 
         //when + then
-        assertThrows(TransactionException.class,() -> transactionService.deposit(depositRequest));
+        assertThrows(TransactionException.class, () -> transactionService.deposit(depositRequest));
 
-        verify(accountRepository,times(1)).findById(eq(account.getAccountId()));
-        verify(bCryptPasswordEncoder,times(1))
-                .matches(eq(depositRequest.getPassword()),anyString());
-        verify(userRepository,times(1)).findAllByRole(eq(Role.ADMIN));
-        verify(accountRepository,times(1)).findByUser(eq(bankAccount.getUser()));
+        verify(accountRepository, times(1)).findById(eq(account.getAccountId()));
+        verify(bCryptPasswordEncoder, times(1))
+                .matches(eq(depositRequest.getPassword()), anyString());
+        verify(userRepository, times(1)).findAllByRole(eq(Role.ADMIN));
+        verify(accountRepository, times(1)).findByUser(eq(bankAccount.getUser()));
         verifyNoInteractions(transactionRepository);
     }
 
     @Test
     void depositShouldIncreaseBankAccountBalanceAndDecreaseAccountBalance() {
         //given
-        final DepositRequest depositRequest = new DepositRequest(2L,"rgiew",BigDecimal.valueOf(111));
+        final DepositRequest depositRequest = new DepositRequest(2L, "rgiew", BigDecimal.valueOf(111));
         final BigDecimal accountBalanceBeforeTransaction = BigDecimal.valueOf(13111);
         final Account account = new Account(2L, new User(1L, Role.USER, "jjvo"
                 , "rgiew"),
@@ -225,12 +225,12 @@ class TransactionServiceTest {
 
         final Transaction expectedTransaction = new Transaction(DEPOSIT, depositRequest.getAmount(),
                 LocalDate.now(), bankAccount, account);
-        ReflectionTestUtils.setField(expectedTransaction,"transactionId",1L);
+        ReflectionTestUtils.setField(expectedTransaction, "transactionId", 1L);
 
 
         //mock the calls
         when(accountRepository.findById(eq(account.getAccountId()))).thenReturn(Optional.of(account));
-        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()),anyString()))
+        when(bCryptPasswordEncoder.matches(eq(depositRequest.getPassword()), anyString()))
                 .thenReturn(true);
         when(userRepository.findAllByRole(eq(Role.ADMIN))).thenReturn(List.of(bankAccount.getUser()));
         when(accountRepository.findByUser(eq(bankAccount.getUser()))).thenReturn(bankAccount);
@@ -238,7 +238,7 @@ class TransactionServiceTest {
                 .thenAnswer(
                         invocationOnMock -> {
                             final Transaction transaction = invocationOnMock.getArgument(0);
-                            ReflectionTestUtils.setField(transaction,"transactionId",1L);
+                            ReflectionTestUtils.setField(transaction, "transactionId", 1L);
                             return transaction;
                         }
                 );
@@ -256,12 +256,12 @@ class TransactionServiceTest {
         assertThat(bankAccount.getBalance())
                 .isEqualTo(bankAccountBalanceAfterTransaction);
 
-        verify(accountRepository,times(1)).findById(eq(account.getAccountId()));
-        verify(bCryptPasswordEncoder,times(1))
-                .matches(eq(depositRequest.getPassword()),anyString());
-        verify(userRepository,times(1)).findAllByRole(eq(Role.ADMIN));
-        verify(accountRepository,times(1)).findByUser(eq(bankAccount.getUser()));
-        verify(transactionRepository,times(1)).save(any(Transaction.class));
+        verify(accountRepository, times(1)).findById(eq(account.getAccountId()));
+        verify(bCryptPasswordEncoder, times(1))
+                .matches(eq(depositRequest.getPassword()), anyString());
+        verify(userRepository, times(1)).findAllByRole(eq(Role.ADMIN));
+        verify(accountRepository, times(1)).findByUser(eq(bankAccount.getUser()));
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 
     @Disabled
